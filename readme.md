@@ -1,6 +1,6 @@
 There is a surplus of bad JavaScript Date parsing / string-emitting code on the web.  So I decided to fix that.
 
-###### There may be bugs yet.  Date handling can get pretty complicated.
+### There may be bugs yet.  Date handling can get pretty complicated.
 
 The name is an attempted joke at both "PHP" and how it's a fake PHP format handler - a farce, if you will.  Mash them together, and "PHPharse" is what you get!  Similarly, the date-string-emitter side of this is spelled "PHPhormat", to retain the "PHP" that the "PHParse" side has while still having "format" be pronounceable in the name.  Feel free to rename these if your funny bone is broken, my feelings won't be hurt!
 
