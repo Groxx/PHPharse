@@ -21,14 +21,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+*/
 
+/** 
+I request (but do not require) that this comment block be included with any 
+non-minified form of this code.  Or something similar.
+
+--- Developer Info: 
+
+PHP date formatting: http://php.net/manual/en/function.date.php
+    
 Users of this chunk of code are encouraged to contact me in some way to let 
 me know it is in use, but are not required to do so.  Information for how to 
 do so should be available at GitHub, under username "Groxx", project "PHPharse", 
 currently located here: https://github.com/Groxx/PHPharse
+
+--- Usage:
+Date.PHParse(date string, format string); // => date instance
+var d = new Date();
+d.PHPhormat(format string); // => formatted date string
 */
 (function(){
 	if (!Date.PHParse){
+		
+		// -----------------------------------------------
+		// Date-string parsing code
+		// -----------------------------------------------
+		
 		Date.PHParse = (function(){ 
 			// this piece of ugliness courtesy of
 			// https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Array/indexOf
@@ -244,6 +263,7 @@ currently located here: https://github.com/Groxx/PHPharse
 				negative: /^-/
 				,digits4: /[\d]4/
 			};
+			// Regular expressions which parse the specified format character & return those values
 			var reg = {
 				// day
 				 d: /^(0[1-9])|([1-3][\d])/
@@ -305,6 +325,7 @@ currently located here: https://github.com/Groxx/PHPharse
 				})())
 				,Z: /^(-43200)|(-43[01][\d]{2})|(-4[0-2][\d]{3})|(-[1-3][\d]{4})|(-[1-9][\d]{0,3})|(-0)|(0)|(50400)|(50[0-3][\d]{2})|(4[\d]{4})|([1-9][\d]{0,3})/ // handles -43200 through 50400 without exceeding either bound.  Super-extra-special bonus: handles "-0" intelligently!
 			}
+			// Get an integer from a regex, and update the string being parsed.
 			var toInt = function(regex){
 				return function(mutableString){
 					var x = regex.exec(mutableString[0])[0];
@@ -312,6 +333,7 @@ currently located here: https://github.com/Groxx/PHPharse
 					return parseInt(x,10);
 				};
 			};
+			// Functions to return the actual values to construct a date
 			var funcs = {
 				// Day
 				d: toInt(reg.d)
@@ -515,7 +537,7 @@ currently located here: https://github.com/Groxx/PHPharse
 			return function(value, format){
 				// step through format string, building array of funcs to process.
 				// when encounter !control character, add a function to strip it.
-				// when encounter a \ character, add a function to strip it and the next character.
+				// when encounter a \ character, add a function to strip it and ignore the next character.
 				var mutableString = [value];
 				var steps = [];
 				var fields = [];
@@ -588,8 +610,13 @@ currently located here: https://github.com/Groxx/PHPharse
 			};
 		})();
 		
+		// -----------------------------------------------
+		// Date-string building code
+		// -----------------------------------------------
+		
 		Date.prototype.PHPhormat = (function(){
 			var mod = function(num, by){
+				// JavaScript's mod operator retains the original sign - annoying :/
 				num = num % by;
 				if (num < 0){
 					num = num + by;
@@ -790,7 +817,8 @@ currently located here: https://github.com/Groxx/PHPharse
 					return "UTC";
 				}
 				,I: function(date){
-					// I have no frickin' clue how to handle this.
+					// Daylight Savings Time hour offset
+					// I have no frickin' clue how to handle this.  DST is a blight upon programmers.
 					// Oh yea: don't.
 					return 0;
 				}
@@ -836,7 +864,7 @@ currently located here: https://github.com/Groxx/PHPharse
 			return function(format){
 				// step through format string, building array of funcs to process.
 				// when encounter !control character, add a function to strip it.
-				// when encounter a \ character, add a function to strip it and the next character.
+				// when encounter a \ character, add a function to strip it and ignore the next character.
 				var steps = [];
 				var length = format.length;
 				for(var i = 0; i < length; i++){
